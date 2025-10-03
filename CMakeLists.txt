@@ -14,3 +14,5 @@ target_link_libraries(Hangman
         $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
         $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
 )
+find_package(glad CONFIG REQUIRED)
+target_link_libraries(Hangman PRIVATE glad::glad)
