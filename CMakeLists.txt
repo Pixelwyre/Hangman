@@ -5,7 +5,9 @@ set(CMAKE_C_STANDARD 11)
 
 find_package(SDL2 CONFIG REQUIRED)
 
-add_executable(Hangman main.c)
+add_executable(Hangman main.c
+        hangman.h
+        hangman.c)
 
 target_link_libraries(Hangman
         PRIVATE
