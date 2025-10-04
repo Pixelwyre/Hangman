@@ -56,7 +56,7 @@ char* getRandomWordFromFile(const char* fileName) {
     return selectedLine;
 }
 
-char* toLower(char* word) {
+char* stringToLower(char* word) {
     for (int i = 0; word[i] != '\0'; i++) {
         word[i] = tolower(word[i]);
     }
