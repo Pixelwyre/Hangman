@@ -7,4 +7,6 @@
 
 char* getRandomWordFromFile(const char* fileName);
 
+char* toLower(char* word);
+
 #endif //HANGMAN_UTILITIES_H

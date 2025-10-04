@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "utilities.h"
 
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -53,4 +54,11 @@ char* getRandomWordFromFile(const char* fileName) {
     }
 
     return selectedLine;
+}
+
+char* toLower(char* word) {
+    for (int i = 0; word[i] != '\0'; i++) {
+        word[i] = tolower(word[i]);
+    }
+    return word;
 }
