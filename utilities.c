@@ -107,3 +107,12 @@ void revealGuessedLetter(const char *word, char *revealed, char guess) {
         }
     }
 }
+
+bool isWordFullyRevealed(const char *revealed) {
+    for (int i = 0; revealed[i] != '\0'; i++) {
+        if (revealed[i] == '_') {
+            return false;  //still letters to guess
+        }
+    }
+    return true;  //all letters revealed
+}

@@ -22,4 +22,6 @@ void copyStringToUnderscores(char *dest, const char *src);
 
 void revealGuessedLetter(const char *word, char *revealed, char guess);
 
+bool isWordFullyRevealed(const char *revealed);
+
 #endif //HANGMAN_UTILITIES_H
