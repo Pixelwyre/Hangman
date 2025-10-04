@@ -14,4 +14,6 @@ bool charInArray(const char array[], char ch, int length);
 
 bool appendCharToArray(char array[], char ch, int *length, int maxLength);
 
+void replaceCharInString(char *str, char oldCh, char newCh);
+
 #endif //HANGMAN_UTILITIES_H

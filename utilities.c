@@ -78,3 +78,9 @@ bool appendCharToArray(char array[], char ch, int *length, int maxLength) {
     (*length)++;
     return true;
 }
+
+void replaceCharInString(char *str, char oldCh, char newCh) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] == oldCh) str[i] = newCh;
+    }
+}
