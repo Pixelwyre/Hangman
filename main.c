@@ -3,6 +3,7 @@
 #define SDL_MAIN_HANDLED
 #include <stdbool.h>
 #include "hangman.h"
+#include "utilities.h"
 
 int main(int argc, char* argv[]) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);

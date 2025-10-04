@@ -7,7 +7,9 @@ find_package(SDL2 CONFIG REQUIRED)
 
 add_executable(Hangman main.c
         hangman.h
-        hangman.c)
+        hangman.c
+        utilities.h
+        utilities.c)
 
 target_link_libraries(Hangman
         PRIVATE
