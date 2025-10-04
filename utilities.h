@@ -4,9 +4,12 @@
 
 #ifndef HANGMAN_UTILITIES_H
 #define HANGMAN_UTILITIES_H
+#include <stdbool.h>
 
 char* getRandomWordFromFile(const char* fileName);
 
 char* stringToLower(char* word);
+
+bool charInArray(const char array[], char ch, int length);
 
 #endif //HANGMAN_UTILITIES_H

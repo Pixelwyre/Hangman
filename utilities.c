@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <stdbool.h>
 
 char* getRandomWordFromFile(const char* fileName) {
     char path[256];
@@ -61,4 +62,11 @@ char* stringToLower(char* word) {
         word[i] = tolower(word[i]);
     }
     return word;
+}
+
+bool charInArray(const char array[], char ch, int length) {
+    for (int i = 0; i < length; i++) {
+        if (array[i] == ch) return true;
+    }
+    return false;
 }
