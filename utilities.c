@@ -99,3 +99,11 @@ void copyStringToUnderscores(char *dest, const char *src) {
     }
     dest[len] = '\0'; //terminate properly
 }
+
+void revealGuessedLetter(const char *word, char *revealed, char guess) {
+    for (int i = 0; word[i] != '\0'; i++) {
+        if (word[i] == guess) {
+            revealed[i] = guess;
+        }
+    }
+}

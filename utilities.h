@@ -20,4 +20,6 @@ bool stringHasChar(const char *str, char ch);
 
 void copyStringToUnderscores(char *dest, const char *src);
 
+void revealGuessedLetter(const char *word, char *revealed, char guess);
+
 #endif //HANGMAN_UTILITIES_H
