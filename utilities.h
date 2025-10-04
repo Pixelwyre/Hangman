@@ -12,4 +12,6 @@ char* stringToLower(char* word);
 
 bool charInArray(const char array[], char ch, int length);
 
+bool appendCharToArray(char array[], char ch, int *length, int maxLength);
+
 #endif //HANGMAN_UTILITIES_H

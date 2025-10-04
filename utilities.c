@@ -70,3 +70,11 @@ bool charInArray(const char array[], char ch, int length) {
     }
     return false;
 }
+
+bool appendCharToArray(char array[], char ch, int *length, int maxLength) {
+    if ((*length) >= maxLength) return false;
+
+    array[*length] = ch;
+    (*length)++;
+    return true;
+}
