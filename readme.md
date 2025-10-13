@@ -24,99 +24,142 @@
 
 initHangman():
 ```angular2html
-function initHangman(word, lives):  //initializes game state.
-    return(word,
-            ____,   //underscores for the amount of letters in the word.
-            guessedLetters[],   //list of letters guessed by the player.
-            lives)  //amount of lives of the player
+FUNCTION InitHangman(word, lives)
+    DECLARE game:GameState
+
+    SET game.word ← word
+    SET game.revealed ← ""
+
+    FOR i ← 1 TO LENGTH(word) DO
+        SET game.revealed ← game.revealed + "_"
+    END FOR
+
+    SET game.guessed ← []       //empty array
+    SET game.numGuessed ← 0
+    SET game.lives ← lives
+
+    RETURN game
+END FUNCTION
 ```
 
 processGuess():
 ```angular2html
-procedure processGuess(gameState, guess):   //check guessed letter, update revealed word or lives.
-    if guess exists inside gameState[word]:
-        for i, character in gameState[word]:    //loop thru the word inside game state, also increment i
-            if character == guess:
-                gameState[revealedString][i] = character
-    else:
-        decrement gameState[lives]
-    append guess to gameState[guessedLetters]
+PROCEDURE ProcessGuess(gameState, guess)
+    IF guess EXISTS IN gameState.word THEN
+        FOR i ← 1 TO LENGTH(gameState.word) DO
+            IF gameState.word[i] = guess THEN
+                SET gameState.revealed[i] ← guess
+            END IF
+        END FOR
+    ELSE
+        SET gameState.lives ← gameState.lives - 1
+    END IF
+
+    CALL appendCharToArray(guess, gameState.guessed)     //this function already exists
+    
+    SET gameState.numGuessed ← gameState.numGuessed + 1
+    END PROCEDURE
 ```
 
 isGameWon():
 ```angular2html
-function isGameWon(gameState):
-    //check if gameState[revealedString] doesnt have any underscores
-    return true if it doesnt have underscores, else return false
+FUNCTION IsGameWon(gameState)
+    IF isWordFullyRevealed(gameState.revealed) = TRUE THEN
+        RETURN TRUE
+    ELSE
+        RETURN FALSE
+    END IF
+END FUNCTION
 ```
 
 isGameOver():
 ```angular2html
-function isGameOver(gameState):
-    //check if gameState[lives] is 0, or player won using isGameWon(gameState)
-    return false if won, if lives is 0 return true
+FUNCTION IsGameOver(gameState)
+    IF isGameWon(gameState) = TRUE THEN
+        RETURN FALSE
+    ELSE IF gameState.lives = 0 THEN
+        RETURN TRUE
+    ELSE
+        RETURN FALSE
+    END IF
+END FUNCTION
 ```
 
 getRevealedWord():
 ```angular2html
-function getRevealedWord(gameState):    //returns revealed word as a string
-    return " " + gameState[revealed]
+FUNCTION GetRevealedWord(gameState)
+    RETURN " " + gameState.revealed
+END FUNCTION
 ```
 
 getRemainingLives():
 ```angular2html
-function getRemainingLives(gameState):  //returns remaining lives of the player
-    return gameState[lives]
+FUNCTION GetRemainingLives(gameState)
+    RETURN gameState.lives
+END FUNCTION
 ```
 
 getGuessedLetters():
 ```angular2html
-function getGuessedLetters(gameState):  //returns guessed letters by the player
-    return gameState[guessedLetters]
+FUNCTION GetGuessedLetters(gameState)
+    RETURN gameState.guessed
+END FUNCTION
 ```
 
 validateGuess():
 ```angular2html
-function validateGuess(gameState, guess):
-    //check if guess isnt already guessed, and is a singular letter and not a number
-    if guess is inside gameState[guessedLetters]:
-        return false
-    else if guess is a singular letter and not a number:
-        return true
-    else return false
+FUNCTION ValidateGuess(gameState, guess)
+    IF charInArray(gameState.guessed, guess, gameState.numGuessed) = TRUE THEN
+        RETURN FALSE
+    ELSE IF (LENGTH(guess) = 1) AND (guess IS A LETTER) THEN
+        RETURN TRUE
+    ELSE
+        RETURN FALSE
+    END IF
+END FUNCTION
 ```
 
 resetGame():
 ```angular2html
-function resetGame(word, lives):    //reset the gameState
-    return initHangman(word, lives)
+FUNCTION ResetGame(word, lives)
+    RETURN InitHangman(word, lives)
+END FUNCTION
 ```
 
 
 ### Main function (core hangman processing):
 ```angular2html
-word = getRandomWordFromFile(random file)
-game = initHangman(word, lives)
+word ← GetRandomWordFromFile("random_file")
+game ← InitHangman(word, lives)
 
-while not isGameOver(game):
-    print word: getRevealedWord(game)
-    print Lives: getRemainingLives(game)
-    print Guessed: None, or getGuessedLetters(game)
+WHILE IsGameOver(game) = FALSE DO
+    PRINT "Word: " + GetRevealedWord(game)
+    PRINT "Lives: " + GetRemainingLives(game)
 
-    guess = input a letter from user
-    
-    if not validateGuess(game, guess):
-        print invalid guess
-        continue
-    
-    processGuess(game, guess):
+    IF game.numGuessed = 0 THEN
+        PRINT "Guessed: None"
+    ELSE
+        PRINT "Guessed: " + GetGuessedLetters(game)
+    END IF
 
-    if isGameWon(game):
-        print you won
-        break
+    INPUT "Enter a letter: " → guess
 
-if not isGameWon(game):
-    print you lost! word was <word>
+    IF ValidateGuess(game, guess) = FALSE THEN
+        PRINT "Invalid guess. Try again."
+        CONTINUE
+    END IF
+
+    CALL ProcessGuess(game, guess)
+
+    IF IsGameWon(game) = TRUE THEN
+        PRINT "You won!"
+        BREAK
+    END IF
+END WHILE
+
+IF IsGameWon(game) = FALSE THEN
+    PRINT "You lost! The word was " + word
+END IF
 ```
 
 ## Helper functions:
