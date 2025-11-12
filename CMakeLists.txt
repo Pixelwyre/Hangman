@@ -6,10 +6,10 @@ set(CMAKE_C_STANDARD 11)
 find_package(SDL2 CONFIG REQUIRED)
 
 add_executable(Hangman main.c
-        hangman.h
-        hangman.c
-        utilities.h
-        utilities.c
+        game/hangman.h
+        game/hangman.c
+        utility/utilities.h
+        utility/utilities.c
         resources/app_icon.rc
 )
 

@@ -1,8 +1,8 @@
 #include <SDL2/SDL.h>
 #include <glad/glad.h>
 #include <stdbool.h>
-#include "hangman.h"
-#include "utilities.h"
+#include "game/hangman.h"
+#include "utility/utilities.h"
 
 #define SDL_MAIN_HANDLED
 
