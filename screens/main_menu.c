@@ -112,8 +112,11 @@ MenuAction main_menu_handle_event(SDL_Window* window, SDL_Renderer* renderer, SD
 }
 
 // --- Render main menu ---
-void main_menu_render(SDL_Renderer* renderer) {
+void main_menu_render(SDL_Renderer* renderer, SDL_Window* window) {
     SDL_RenderClear(renderer);
+
+    // Update window size (in case it changed while we were in another screen)
+    SDL_GetWindowSize(window, &menu.winW, &menu.winH);
 
     // Stretch images to fill the window
     SDL_Rect fullWin = {0, 0, menu.winW, menu.winH};

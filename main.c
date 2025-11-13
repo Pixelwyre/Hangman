@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
 
         // --- Render ---
         if (inMenu) {
-            main_menu_render(renderer);
+            main_menu_render(renderer, window);
         } else if (inAbout) {
             about_section_render(renderer, window);
         }
