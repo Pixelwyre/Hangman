@@ -6,6 +6,8 @@
 #define HANGMAN_UTILITIES_H
 #include <stdbool.h>
 
+char* getRandomWordFileName();
+
 char* getRandomWordFromFile(const char* fileName);
 
 char* stringToLower(char* word);
