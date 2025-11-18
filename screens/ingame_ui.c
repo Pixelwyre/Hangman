@@ -331,7 +331,7 @@ void ingame_ui_handle_event(SDL_Event *event) {
                 ui.waitingAfterGameOver = false;
                 ui.gameOver = false;
             } else if (event->key.keysym.sym == SDLK_RETURN || event->key.keysym.sym == SDLK_KP_ENTER) {
-                char *newWord = getRandomWordFromFile("continents");
+                char *newWord = getRandomWordFromFile(getRandomWordFileName());
                 if (newWord) {
                     GameState newGame = resetGame(newWord,MAX_LIVES);
                     free(newWord);

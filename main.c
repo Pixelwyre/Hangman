@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
 
                 if (action == MENU_START) {
 
-                    char* word = getRandomWordFromFile("continents");
+                    char* word = getRandomWordFromFile(getRandomWordFileName());
                     if (!word) {
                         printf("Failed to get word\n");
                         shouldQuit = true;
