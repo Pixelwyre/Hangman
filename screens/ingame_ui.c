@@ -196,8 +196,11 @@ bool ingame_ui_init(SDL_Window *window, SDL_Renderer *renderer, GameState *game)
     char path[512];
 
     for (int i = 0; i < FRAME_COUNT; i++) {
-        snprintf(path, sizeof(path),FRAME_FOLDER FRAME_PREFIX "%03d.png", i + 1);
-        SDL_Surface *surf = IMG_Load(path);
+        // snprintf(path, sizeof(path),FRAME_FOLDER FRAME_PREFIX "%03d.png", i + 1);
+        // SDL_Surface *surf = IMG_Load(path);
+
+        snprintf(path, sizeof(path),FRAME_FOLDER FRAME_PREFIX "%03d.bmp", i + 1);
+        SDL_Surface *surf = SDL_LoadBMP(path);
         if (!surf) {
             ui.frames[i] = NULL;
             continue;
