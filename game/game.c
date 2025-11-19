@@ -12,14 +12,15 @@ int runGame(SDL_Window *window, SDL_Renderer *renderer) {
     srand(time(NULL));
 
     // Get random word
-    char *word = getRandomWordFromFile("continents");
+    char *wordFile = getRandomWordFileName();
+    char *word = getRandomWordFromFile(wordFile);
     if (!word) {
         printf("Failed to load word.\n");
         return 1;
     }
 
     // Initialize game state
-    GameState game = initHangman(word, 5);
+    GameState game = initHangman(wordFile, word, 5);
     free(word);
 
     // Initialize ingame UI with pointer to game state

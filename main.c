@@ -110,14 +110,15 @@ int main(int argc, char *argv[]) {
                         main_menu_handle_event(window, renderer, &event);
 
                 if (action == MENU_START) {
-                    char *word = getRandomWordFromFile(getRandomWordFileName());
+                    char *wordFile = getRandomWordFileName();
+                    char *word = getRandomWordFromFile(wordFile);
                     if (!word) {
                         printf("Failed to get word\n");
                         shouldQuit = true;
                         break;
                     }
 
-                    game = initHangman(word, 6);
+                    game = initHangman(wordFile, word, 6);
                     free(word);
 
                     if (!ingame_ui_init(window, renderer, &game)) {

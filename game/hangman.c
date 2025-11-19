@@ -6,8 +6,10 @@
 #include "hangman.h"
 #include "../utility/utilities.h"
 
-GameState initHangman(const char *word, int lives) {
+GameState initHangman(const char *wordFile, const char *word, int lives) {
     GameState game;
+
+    strncpy(game.wordFile, wordFile, MAX_WORD_LEN);
 
     strncpy(game.word, word, MAX_WORD_LEN);
     stringToLower(game.word);
@@ -102,8 +104,8 @@ const char *getGuessedLetters(const GameState *game) {
     return game->guessed;
 }
 
-GameState resetGame(const char *word, int lives) {
-    return initHangman(word, lives);
+GameState resetGame(const char *wordFile, const char *word, int lives) {
+    return initHangman(wordFile, word, lives);
 }
 
 void activatePowerUp(GameState *game, int power_id) {

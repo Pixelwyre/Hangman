@@ -7,6 +7,7 @@
 #define MAX_GUESSED 64
 
 typedef struct {
+    char wordFile[MAX_WORD_LEN];
     char word[MAX_WORD_LEN];
     char revealed[MAX_WORD_LEN];
     char guessed[MAX_GUESSED];
@@ -18,7 +19,7 @@ typedef struct {
 
 
 // hangman
-GameState initHangman(const char *word, int lives);
+GameState initHangman(const char *wordFile, const char *word, int lives);
 
 bool processGuess(GameState *game, char guess);
 
@@ -34,7 +35,7 @@ int getRemainingLives(const GameState *game);
 
 const char *getGuessedLetters(const GameState *game);
 
-GameState resetGame(const char *word, int lives);
+GameState resetGame(const char *wordFile, const char *word, int lives);
 
 // powers
 void applyPowerUp(GameState *game);

@@ -249,9 +249,10 @@ void ingame_ui_handle_event(SDL_Event *event) {
                 ui.waitingAfterGameOver = false;
                 ui.gameOver = false;
             } else if (event->key.keysym.sym == SDLK_RETURN || event->key.keysym.sym == SDLK_KP_ENTER) {
-                char *newWord = getRandomWordFromFile(getRandomWordFileName());
+                char *newWordFile = getRandomWordFileName();
+                char *newWord = getRandomWordFromFile(newWordFile);
                 if (newWord) {
-                    GameState newGame = resetGame(newWord, MAX_LIVES);
+                    GameState newGame = resetGame(newWordFile, newWord, MAX_LIVES);
                     free(newWord);
                     *(ui.game) = newGame;
                 }
@@ -386,6 +387,14 @@ void ingame_ui_render(SDL_Renderer *renderer, SDL_Window *window) {
         int y = (int) (ui.winH * 0.4);
 
         render_text_fitted(renderer, ui.game->revealed, boundX, boundW, y, 2.15f, white);
+
+        // --- Word file at top-left, 15% down ---
+        int xHint = (int)(ui.winW * 0.02f);       // small left margin
+        int yHint = (int)(ui.winH * 0.25f);       // 15% down from top
+        char hintString[256] = "Hint: ";
+        snprintf(hintString, sizeof(hintString), "Hint: %s", ui.game->wordFile);
+        render_text_scaled_with_shadow(renderer, ui.font, hintString,
+                                       xHint, yHint, white, 1.0f);
 
         // --- GAME OVER / YOU WON MESSAGE ---
         bool gameOver = (ui.game->lives == 0 || isWordFullyRevealed(ui.game->revealed));
