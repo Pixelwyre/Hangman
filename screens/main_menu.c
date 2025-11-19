@@ -48,12 +48,13 @@ bool main_menu_init(SDL_Window *window, SDL_Renderer *renderer) {
 
     SDL_GetWindowSize(window, &menu.winW, &menu.winH);
 
-    return texture_manager_init_main_menu(renderer);
+    // return texture_manager_init_main_menu(renderer);
+    return true;
 }
 
 // --- Destroy textures ---
 void main_menu_destroy() {
-    texture_manager_destroy_main_menu();
+    // texture_manager_destroy_main_menu();
 
     IMG_Quit();
 }

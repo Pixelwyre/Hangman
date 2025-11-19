@@ -177,10 +177,10 @@ bool ingame_ui_init(SDL_Window *window, SDL_Renderer *renderer, GameState *game)
     ui.lettersPulled = false;
 
     // Load textures through texture manager
-    if (!texture_manager_init_ingame_ui(renderer)) {
-        printf("[ERROR] Failed to load ingame UI textures\n");
-        return false;
-    }
+    // if (!texture_manager_init_ingame_ui(renderer)) {
+    //     printf("[ERROR] Failed to load ingame UI textures\n");
+    //     return false;
+    // }
 
     // Load font (this is UI-specific, not a texture)
     ui.font = TTF_OpenFont("resources/font/PixelifySans-SemiBold.ttf", 36);
@@ -215,7 +215,7 @@ void ingame_ui_trigger_powerup(void) {
 
 void ingame_ui_destroy() {
     // Destroy textures through texture manager
-    texture_manager_destroy_ingame_ui();
+    // texture_manager_destroy_ingame_ui();
 
     // Close font
     if (ui.font) TTF_CloseFont(ui.font);

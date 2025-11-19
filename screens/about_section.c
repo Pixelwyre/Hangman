@@ -154,9 +154,9 @@ bool about_section_init(SDL_Window *window, SDL_Renderer *renderer) {
 
     SDL_GetWindowSize(window, &about.winW, &about.winH);
 
-    if (!texture_manager_init_about_section(renderer)) {
-        return false;
-    }
+    // if (!texture_manager_init_about_section(renderer)) {
+    //     return false;
+    // }
 
     about.font = TTF_OpenFont("resources/font/PixelifySans-SemiBold.ttf", 36);
     if (!about.font) return false;
@@ -170,7 +170,7 @@ bool about_section_init(SDL_Window *window, SDL_Renderer *renderer) {
 
 // --- Destroy about section ---
 void about_section_destroy() {
-    texture_manager_destroy_about_section();
+    // texture_manager_destroy_about_section();
     if (about.lines) {
         for (int i = 0; i < about.numLines; i++) {
             if (about.lines[i]) SDL_DestroyTexture(about.lines[i]);

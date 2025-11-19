@@ -5,6 +5,7 @@
 #include "screens/about_section.h"
 #include "screens/ingame_ui.h"
 #include "game/hangman.h"
+#include "screens/graphics/texture_manager.h"
 #include "utility/utilities.h"
 
 #define SDL_MAIN_HANDLED
@@ -37,6 +38,7 @@ int main(int argc, char *argv[]) {
 
     if (!main_menu_init(window, renderer)) return 1;
     if (!about_section_init(window, renderer)) return 1;
+    if (!texture_manager_init(renderer)) return 1;
 
     bool shouldQuit = false;
     bool inMenu = true;
@@ -129,10 +131,11 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // Cleanup
-    if (inGame) ingame_ui_destroy();
-    main_menu_destroy();
-    about_section_destroy();
+    // // Cleanup
+    // if (inGame) ingame_ui_destroy();
+    // main_menu_destroy();
+    // about_section_destroy();
+    texture_manager_destroy_all();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     TTF_Quit();

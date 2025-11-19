@@ -47,6 +47,9 @@ void texture_manager_destroy_main_menu(void);
 void texture_manager_destroy_ingame_ui(void);
 void texture_manager_destroy_about_section(void);
 
+// Setup all textures
+bool texture_manager_init(SDL_Renderer *renderer);
+
 // Destroy all textures
 void texture_manager_destroy_all(void);
 

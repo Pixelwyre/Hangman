@@ -225,6 +225,14 @@ void texture_manager_destroy_about_section(void) {
 }
 
 // ============================================================================
+// GLOBAL SETUP
+// ============================================================================
+
+bool texture_manager_init(SDL_Renderer *renderer) {
+    return texture_manager_init_main_menu(renderer) && texture_manager_init_about_section(renderer) && texture_manager_init_ingame_ui(renderer);
+}
+
+// ============================================================================
 // GLOBAL CLEANUP
 // ============================================================================
 
