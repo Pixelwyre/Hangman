@@ -406,7 +406,16 @@ void ingame_ui_render(SDL_Renderer *renderer, SDL_Window *window) {
                 TTF_SizeText(ui.font, title, &textW, &textH);
                 int centerX = (ui.winW - 2 * (textW)) / 2;
                 render_text_scaled_with_shadow(renderer, ui.font, title, centerX, titleY, white, 2.0f);
+            } else {
+                char title[256];  // a writable buffer
+                snprintf(title, sizeof(title), "Word was: %s", ui.game->word);
+
+                int titleY = (int)(ui.winH * 0.30f);
+                TTF_SizeText(ui.font, title, &textW, &textH);
+                int centerX = (ui.winW - 2 * textW) / 1.5;
+                render_text_scaled_with_shadow(renderer, ui.font, title, centerX, titleY, white, 1.5f);
             }
+
 
             // --- ESC / Enter prompts at 25% from bottom ---
             int bottomY = (int) (ui.winH * 0.75);
