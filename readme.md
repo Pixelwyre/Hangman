@@ -2,30 +2,29 @@
 
 ### Dependencies
 - SDL2
-- glad
 
 ### Planned Power-ups
 
 | Implemented? | ID | Power-Up Name     | Effect                                       |
 |--------------|----|-------------------|----------------------------------------------|
-| [ ]          | 1  | Fill Random Blank | Reveals one correct missing letter           |
-| [ ]          | 2  | Extra Life        | +1 life                                      |
-| [ ]          | 3  | Reveal All Vowels | Reveals all vowels in word                   |
-| [ ]          | 4  | Shield            | Next incorrect guess does NOT reduce a life  |
-| [ ]          | 5  | Chance            | 5% bonus power-up, 5% lose life, 90% nothing |
+| [x]          | 1  | Fill Random Blank | Reveals one correct missing letter           |
+| [x]          | 2  | Extra Life        | +1 life                                      |
+| [x]          | 3  | Reveal All Vowels | Reveals all vowels in word                   |
+| [x]          | 4  | Shield            | Next incorrect guess does NOT reduce a life  |
+| [x]          | 5  | Chance            | 5% bonus power-up, 5% lose life, 90% nothing |
 
 ### PAC
 | Implemented? | Input          | Processing                             | Function / Module     | Output             |
 |--------------|----------------|----------------------------------------|-----------------------|--------------------|
-| [ ]          | word, lives    | Initialize game state                  | `initHangman()`       | Ready game state   |
-| [ ]          | guessed letter | Update revealed letters or lose a life | `processGuess()`      | Updated game state |
-| [ ]          | game state     | Check if all letters guessed           | `isGameWon()`         | Boolean            |
-| [ ]          | game state     | Check if win or 0 lives                | `isGameOver()`        | Boolean            |
-| [ ]          | game state     | Return revealed word (incl. spaces)    | `getRevealedWord()`   | String             |
-| [ ]          | game state     | Return remaining lives                 | `getRemainingLives()` | Integer            |
-| [ ]          | game state     | Return guessed letters                 | `getGuessedLetters()` | Array              |
-| [ ]          | guess, state   | Validate guess: alphabetical, unused   | `validateGuess()`     | Boolean            |
-| [ ]          | word, lives    | Reset game completely                  | `resetGame()`         | New game state     |
+| [x]          | word, lives    | Initialize game state                  | `initHangman()`       | Ready game state   |
+| [x]          | guessed letter | Update revealed letters or lose a life | `processGuess()`      | Updated game state |
+| [x]          | game state     | Check if all letters guessed           | `isGameWon()`         | Boolean            |
+| [x]          | game state     | Check if win or 0 lives                | `isGameOver()`        | Boolean            |
+| [x]          | game state     | Return revealed word (incl. spaces)    | `getRevealedWord()`   | String             |
+| [x]          | game state     | Return remaining lives                 | `getRemainingLives()` | Integer            |
+| [x]          | game state     | Return guessed letters                 | `getGuessedLetters()` | Array              |
+| [x]          | guess, state   | Validate guess: alphabetical, unused   | `validateGuess()`     | Boolean            |
+| [x]          | word, lives    | Reset game completely                  | `resetGame()`         | New game state     |
 
 
 ### PSEUDOCODE

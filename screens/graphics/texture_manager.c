@@ -4,12 +4,12 @@
 #include <stdio.h>
 #include <string.h>
 
-// Global texture instances
+//global texture instances
 MainMenuTextures g_mainMenuTextures = {0};
 IngameUITextures g_ingameUITextures = {0};
 AboutSectionTextures g_aboutTextures = {0};
 
-// Surface storage for async loading
+//surface storage for async loading
 static struct {
     SDL_Surface *mainMenu_bg;
     SDL_Surface *mainMenu_start;
@@ -28,7 +28,7 @@ static struct {
     SDL_Surface *ingame_powerBoxes[9];
 } g_loadedSurfaces = {0};
 
-// Threading state
+//threading state
 static SDL_Thread *g_loadThread = NULL;
 static SDL_atomic_t g_loadProgress;
 static SDL_atomic_t g_surfacesLoaded;
@@ -38,7 +38,7 @@ static SDL_atomic_t g_texturesCreated;
 // MAIN MENU TEXTURES
 // ============================================================================
 
-bool texture_manager_init_main_menu(SDL_Renderer *renderer) {
+bool textureManagerInitMainMenu(SDL_Renderer *renderer) {
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
         printf("[ERROR] SDL_image init failed: %s\n", IMG_GetError());
         return false;
@@ -79,7 +79,7 @@ bool texture_manager_init_main_menu(SDL_Renderer *renderer) {
     return true;
 }
 
-void texture_manager_destroy_main_menu(void) {
+void textureManagerDestroyMainMenu(void) {
     if (g_mainMenuTextures.background) SDL_DestroyTexture(g_mainMenuTextures.background);
     if (g_mainMenuTextures.start) SDL_DestroyTexture(g_mainMenuTextures.start);
     if (g_mainMenuTextures.startHover) SDL_DestroyTexture(g_mainMenuTextures.startHover);
@@ -95,7 +95,7 @@ void texture_manager_destroy_main_menu(void) {
 // INGAME UI TEXTURES
 // ============================================================================
 
-bool texture_manager_init_ingame_ui(SDL_Renderer *renderer) {
+bool textureManagerInitIngameUi(SDL_Renderer *renderer) {
     char path[512];
 
     for (int i = 0; i < 180; i++) {
@@ -165,7 +165,7 @@ bool texture_manager_init_ingame_ui(SDL_Renderer *renderer) {
     return true;
 }
 
-void texture_manager_destroy_ingame_ui(void) {
+void textureManagerDestroyIngameUi(void) {
     for (int i = 0; i < 180; i++) {
         if (g_ingameUITextures.frames[i]) {
             SDL_DestroyTexture(g_ingameUITextures.frames[i]);
@@ -214,7 +214,7 @@ void texture_manager_destroy_ingame_ui(void) {
 // ABOUT SECTION TEXTURES
 // ============================================================================
 
-bool texture_manager_init_about_section(SDL_Renderer *renderer) {
+bool textureManagerInitAboutSection(SDL_Renderer *renderer) {
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
         printf("[ERROR] SDL_image init failed for about section: %s\n", IMG_GetError());
         return false;
@@ -229,7 +229,7 @@ bool texture_manager_init_about_section(SDL_Renderer *renderer) {
     return true;
 }
 
-void texture_manager_destroy_about_section(void) {
+void textureManagerDestroyAboutSection(void) {
     if (g_aboutTextures.background) SDL_DestroyTexture(g_aboutTextures.background);
     memset(&g_aboutTextures, 0, sizeof(AboutSectionTextures));
 }
@@ -238,20 +238,20 @@ void texture_manager_destroy_about_section(void) {
 // GLOBAL SETUP (Synchronous)
 // ============================================================================
 
-bool texture_manager_init(SDL_Renderer *renderer) {
-    return texture_manager_init_main_menu(renderer) &&
-           texture_manager_init_about_section(renderer) &&
-           texture_manager_init_ingame_ui(renderer);
+bool textureManagerInit(SDL_Renderer *renderer) {
+    return textureManagerInitMainMenu(renderer) &&
+           textureManagerInitAboutSection(renderer) &&
+           textureManagerInitIngameUi(renderer);
 }
 
 // ============================================================================
 // GLOBAL CLEANUP
 // ============================================================================
 
-void texture_manager_destroy_all(void) {
-    texture_manager_destroy_main_menu();
-    texture_manager_destroy_ingame_ui();
-    texture_manager_destroy_about_section();
+void textureManagerDestroyAll(void) {
+    textureManagerDestroyMainMenu();
+    textureManagerDestroyIngameUi();
+    textureManagerDestroyAboutSection();
     IMG_Quit();
 }
 
@@ -259,9 +259,9 @@ void texture_manager_destroy_all(void) {
 // THREADED LOADING IMPLEMENTATION
 // ============================================================================
 
-static int surface_load_thread(void *data) {
+static int surfaceLoadThread(void *data) {
     char path[512];
-    int totalItems = 5 + 1 + 180 + 7 + 1 + 2 + 1 + 9; // Total surface count = 206
+    int totalItems = 5 + 1 + 180 + 7 + 1 + 2 + 1 + 9; //total surface count = 206
     int currentItem = 0;
 
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
@@ -293,8 +293,8 @@ static int surface_load_thread(void *data) {
 
     // Load ingame frames (180 BMPs)
     for (int i = 0; i < 180; i++) {
-        snprintf(path, sizeof(path), "resources/textures/ingame_ui/background_frames/background_frame_%03d.bmp", i + 1);
-        g_loadedSurfaces.ingame_frames[i] = SDL_LoadBMP(path);
+        snprintf(path, sizeof(path), "resources/textures/ingame_ui/background_frames/background_frame_%03d.png", i + 1);
+        g_loadedSurfaces.ingame_frames[i] = IMG_Load(path);
         currentItem++; SDL_AtomicSet(&g_loadProgress, (int)((currentItem / (float)totalItems) * 100.0f));
     }
 
@@ -332,12 +332,12 @@ static int surface_load_thread(void *data) {
     return 0;
 }
 
-bool texture_manager_start_async_load(void) {
+bool textureManagerStartAsyncLoad(void) {
     SDL_AtomicSet(&g_loadProgress, 0);
     SDL_AtomicSet(&g_surfacesLoaded, 0);
     SDL_AtomicSet(&g_texturesCreated, 0);
 
-    g_loadThread = SDL_CreateThread(surface_load_thread, "SurfaceLoader", NULL);
+    g_loadThread = SDL_CreateThread(surfaceLoadThread, "SurfaceLoader", NULL);
     if (!g_loadThread) {
         printf("[ERROR] Failed to create surface loading thread: %s\n", SDL_GetError());
         return false;
@@ -346,7 +346,7 @@ bool texture_manager_start_async_load(void) {
     return true;
 }
 
-bool texture_manager_process_loaded_surfaces(SDL_Renderer *renderer) {
+bool textureManagerProcessLoadedSurfaces(SDL_Renderer *renderer) {
     if (!SDL_AtomicGet(&g_surfacesLoaded)) {
         return false; // Still loading
     }
@@ -455,14 +455,14 @@ bool texture_manager_process_loaded_surfaces(SDL_Renderer *renderer) {
     return true;
 }
 
-float texture_manager_get_progress(void) {
+float textureManagerGetProgress(void) {
     return SDL_AtomicGet(&g_loadProgress) / 100.0f;
 }
 
-bool texture_manager_surfaces_loaded(void) {
+bool textureManagerSurfacesLoaded(void) {
     return SDL_AtomicGet(&g_surfacesLoaded) == 1;
 }
 
-bool texture_manager_is_fully_loaded(void) {
+bool textureManagerIsFullyLoaded(void) {
     return SDL_AtomicGet(&g_texturesCreated) == 1;
 }

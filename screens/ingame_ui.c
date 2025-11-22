@@ -1,6 +1,5 @@
 #include "ingame_ui.h"
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,9 +42,9 @@ typedef struct {
 
 static IngameUI ui;
 
-// -------------------- helpers --------------------
+//HELPER METHODS:
 
-static bool surface_pixel_opaque(SDL_Surface *surf, int x, int y) {
+static bool surfacePixelOpaque(SDL_Surface *surf, int x, int y) {
     if (!surf) return false;
     if (x < 0 || y < 0 || x >= surf->w || y >= surf->h) return false;
     Uint32 *pixels = (Uint32 *) surf->pixels;
@@ -55,7 +54,7 @@ static bool surface_pixel_opaque(SDL_Surface *surf, int x, int y) {
     return a > 0;
 }
 
-static void map_mouse_to_surface(int mouseX, int mouseY, int winW, int winH, int surfW, int surfH, int *outX,
+static void mapMouseToSurface(int mouseX, int mouseY, int winW, int winH, int surfW, int surfH, int *outX,
                                  int *outY) {
     if (winW <= 0) winW = 1;
     if (winH <= 0) winH = 1;
@@ -67,9 +66,9 @@ static void map_mouse_to_surface(int mouseX, int mouseY, int winW, int winH, int
     if (*outY >= surfH) *outY = surfH - 1;
 }
 
-// -------------------- text rendering --------------------
+//TEXT RENDERING:
 
-static void render_text_scaled_with_shadow(SDL_Renderer *renderer, TTF_Font *font, const char *text,
+static void renderTextScaledWithShadow(SDL_Renderer *renderer, TTF_Font *font, const char *text,
                                            int x, int y, SDL_Color color, float scale) {
     if (!text || !font) return;
     int baseSize = TTF_FontHeight(font);
@@ -107,9 +106,9 @@ static void render_text_scaled_with_shadow(SDL_Renderer *renderer, TTF_Font *fon
     TTF_CloseFont(scaledFont);
 }
 
-// -------------------- power-up wrapper --------------------
+// POWER UP WRAPPER FOR UI BASED
 
-void ingame_ui_activate_powerup(GameState *game, int power_id, char *outMessage, size_t size) {
+void ingameUiActivatePowerup(GameState *game, int power_id, char *outMessage, size_t size) {
     if (!game || !outMessage || size == 0) return;
     outMessage[0] = 0;
     char buffer[256] = {0};
@@ -144,7 +143,7 @@ void ingame_ui_activate_powerup(GameState *game, int power_id, char *outMessage,
             if (roll <= 5) {
                 int pid = rand() % 4 + 1;
                 char submsg[128];
-                ingame_ui_activate_powerup(game, pid, submsg, sizeof(submsg));
+                ingameUiActivatePowerup(game, pid, submsg, sizeof(submsg));
                 snprintf(buffer, sizeof(buffer), "Bonus random power up!\n%s", submsg);
             } else if (roll <= 10) {
                 game->lives--;
@@ -160,9 +159,8 @@ void ingame_ui_activate_powerup(GameState *game, int power_id, char *outMessage,
     outMessage[size - 1] = 0;
 }
 
-// -------------------- init --------------------
-
-bool ingame_ui_init(SDL_Window *window, SDL_Renderer *renderer, GameState *game) {
+//initialise
+bool ingameUiInit(SDL_Window *window, SDL_Renderer *renderer, GameState *game) {
     memset(&ui, 0, sizeof(ui));
     ui.game = game;
     SDL_GetWindowSize(window, &ui.winW, &ui.winH);
@@ -176,13 +174,7 @@ bool ingame_ui_init(SDL_Window *window, SDL_Renderer *renderer, GameState *game)
     ui.quitToMenu = false;
     ui.lettersPulled = false;
 
-    // Load textures through texture manager
-    // if (!texture_manager_init_ingame_ui(renderer)) {
-    //     printf("[ERROR] Failed to load ingame UI textures\n");
-    //     return false;
-    // }
-
-    // Load font (this is UI-specific, not a texture)
+    //load font
     ui.font = TTF_OpenFont("resources/font/PixelifySans-SemiBold.ttf", 36);
     if (!ui.font) {
         printf("[ERROR] Failed to load font\n");
@@ -192,9 +184,8 @@ bool ingame_ui_init(SDL_Window *window, SDL_Renderer *renderer, GameState *game)
     return true;
 }
 
-// -------------------- trigger power UI --------------------
-
-void ingame_ui_trigger_powerup(void) {
+//trigger power ui
+void ingameUiTriggerPowerup(void) {
     ui.powerUIActive = true;
     ui.selectedBox = -1;
     ui.showPowerResult = false;
@@ -211,19 +202,14 @@ void ingame_ui_trigger_powerup(void) {
     }
 }
 
-// -------------------- destroy --------------------
-
-void ingame_ui_destroy() {
-    // Destroy textures through texture manager
-    // texture_manager_destroy_ingame_ui();
-
-    // Close font
+// destroy
+void ingameUiDestroy() {
+    //close font
     if (ui.font) TTF_CloseFont(ui.font);
 }
 
-// -------------------- update --------------------
-
-void ingame_ui_update(float deltaTime) {
+//update ui
+void ingameUiUpdate(float deltaTime) {
     if (ui.paused) return;
     ui.accumulator += deltaTime;
     while (ui.accumulator >= ui.frameTime) {
@@ -237,9 +223,8 @@ void ingame_ui_update(float deltaTime) {
     }
 }
 
-// -------------------- handle events --------------------
-
-void ingame_ui_handle_event(SDL_Event *event) {
+//handle events
+void ingameUiHandleEvent(SDL_Event *event) {
     if (!ui.game) return;
 
     if (ui.gameOver || ui.waitingAfterGameOver) {
@@ -268,8 +253,8 @@ void ingame_ui_handle_event(SDL_Event *event) {
         SDL_Surface *surf = ui.lettersPulled ? g_ingameUITextures.lettersSurf[1] : g_ingameUITextures.lettersSurf[0];
         if (surf) {
             int sx, sy;
-            map_mouse_to_surface(event->button.x, event->button.y, ui.winW, ui.winH, surf->w, surf->h, &sx, &sy);
-            if (surface_pixel_opaque(surf, sx, sy)) {
+            mapMouseToSurface(event->button.x, event->button.y, ui.winW, ui.winH, surf->w, surf->h, &sx, &sy);
+            if (surfacePixelOpaque(surf, sx, sy)) {
                 ui.lettersPulled = !ui.lettersPulled;
                 return;
             }
@@ -290,12 +275,12 @@ void ingame_ui_handle_event(SDL_Event *event) {
         char c = (char) key;
         if (c >= 'a' && c <= 'z') {
             if (!validateGuess(ui.game, c)) return;
-            if (processGuess(ui.game, c)) ingame_ui_trigger_powerup();
+            if (processGuess(ui.game, c)) ingameUiTriggerPowerup();
             appendCharToArray(ui.game->guessed, c, &ui.game->numGuessed, MAX_GUESSED);
         } else if (c >= 'A' && c <= 'Z') {
             c = (char) tolower(key);
             if (!validateGuess(ui.game, c)) return;
-            if (processGuess(ui.game, c)) ingame_ui_trigger_powerup();
+            if (processGuess(ui.game, c)) ingameUiTriggerPowerup();
             appendCharToArray(ui.game->guessed, c, &ui.game->numGuessed, MAX_GUESSED);
         }
     }
@@ -308,10 +293,10 @@ void ingame_ui_handle_event(SDL_Event *event) {
             SDL_Surface *surf = g_ingameUITextures.powerUI_boxSurfs[i];
             if (surf) {
                 int sx, sy;
-                map_mouse_to_surface(mx, my, ui.winW, ui.winH, surf->w, surf->h, &sx, &sy);
-                if (surface_pixel_opaque(surf, sx, sy)) {
+                mapMouseToSurface(mx, my, ui.winW, ui.winH, surf->w, surf->h, &sx, &sy);
+                if (surfacePixelOpaque(surf, sx, sy)) {
                     ui.selectedBox = i;
-                    ingame_ui_activate_powerup(ui.game, i + 1, ui.powerResultText, sizeof(ui.powerResultText));
+                    ingameUiActivatePowerup(ui.game, i + 1, ui.powerResultText, sizeof(ui.powerResultText));
                     ui.showPowerResult = true;
                     ui.powerResultTimer = 3.0f;
                     ui.powerUIActive = false;
@@ -322,7 +307,7 @@ void ingame_ui_handle_event(SDL_Event *event) {
     }
 }
 
-static void render_text_fitted(SDL_Renderer *renderer, const char *text, int boundX, int boundW, int y, float baseScale,
+static void renderTextFitted(SDL_Renderer *renderer, const char *text, int boundX, int boundW, int y, float baseScale,
                                SDL_Color color) {
     if (!text || !ui.font) return;
     int textW, textH;
@@ -353,19 +338,18 @@ static void render_text_fitted(SDL_Renderer *renderer, const char *text, int bou
     SDL_DestroyTexture(tex);
 }
 
-// -------------------- render --------------------
-
-void ingame_ui_render(SDL_Renderer *renderer, SDL_Window *window) {
+//render
+void ingameUiRender(SDL_Renderer *renderer, SDL_Window *window) {
     SDL_GetWindowSize(window, &ui.winW, &ui.winH);
     SDL_RenderClear(renderer);
 
-    // --- Background frame ---
+    //background frames
     if (g_ingameUITextures.frames[ui.currentFrame]) {
         SDL_Rect full = {0, 0, ui.winW, ui.winH};
         SDL_RenderCopy(renderer, g_ingameUITextures.frames[ui.currentFrame], NULL, &full);
     }
 
-    // --- Lives overlay ---
+    //lives overlay
     if (ui.game) {
         int lives = ui.game->lives;
         if (lives < 0) lives = 0;
@@ -379,24 +363,24 @@ void ingame_ui_render(SDL_Renderer *renderer, SDL_Window *window) {
 
         SDL_Color white = {255, 255, 255, 255};
 
-        // Fit revealed word inside the reference area (based on 1920x)
+        //fit revealed word inside the reference area (based on 1080p)
         float leftPercent = 562.0f / 1920.0f;
         float rightPercent = 690.0f / 1920.0f;
         int boundX = (int) (ui.winW * leftPercent);
         int boundW = ui.winW - (int) (ui.winW * leftPercent) - (int) (ui.winW * rightPercent);
         int y = (int) (ui.winH * 0.4);
 
-        render_text_fitted(renderer, ui.game->revealed, boundX, boundW, y, 2.15f, white);
+        renderTextFitted(renderer, ui.game->revealed, boundX, boundW, y, 2.15f, white);
 
-        // --- Word file at top-left, 15% down ---
-        int xHint = (int)(ui.winW * 0.02f);       // small left margin
-        int yHint = (int)(ui.winH * 0.25f);       // 15% down from top
+        //word category hint
+        int xHint = (int)(ui.winW * 0.02f);
+        int yHint = (int)(ui.winH * 0.25f);
         char hintString[256] = "Hint: ";
         snprintf(hintString, sizeof(hintString), "Hint: %s", ui.game->wordFile);
-        render_text_scaled_with_shadow(renderer, ui.font, hintString,
+        renderTextScaledWithShadow(renderer, ui.font, hintString,
                                        xHint, yHint, white, 1.0f);
 
-        // --- GAME OVER / YOU WON MESSAGE ---
+        //game over you won message
         bool gameOver = (ui.game->lives == 0 || isWordFullyRevealed(ui.game->revealed));
         if (gameOver) {
             ui.gameOver = true;
@@ -408,47 +392,47 @@ void ingame_ui_render(SDL_Renderer *renderer, SDL_Window *window) {
             int textW, textH;
             int spacing = 8;
 
-            // --- Winning message (only if lives > 0) ---
+            //winning message
             if (ui.game->lives > 0) {
                 const char *title = "YOU WON";
                 int titleY = (int) (ui.winH * 0.10f);
                 TTF_SizeText(ui.font, title, &textW, &textH);
                 int centerX = (ui.winW - 2 * (textW)) / 2;
-                render_text_scaled_with_shadow(renderer, ui.font, title, centerX, titleY, white, 2.0f);
+                renderTextScaledWithShadow(renderer, ui.font, title, centerX, titleY, white, 2.0f);
             } else {
-                char title[256];  // a writable buffer
+                char title[256];  //a writable buffer
                 snprintf(title, sizeof(title), "Word was: %s", ui.game->word);
 
                 int titleY = (int)(ui.winH * 0.30f);
                 TTF_SizeText(ui.font, title, &textW, &textH);
                 int centerX = (ui.winW - 2 * textW) / 1.5;
-                render_text_scaled_with_shadow(renderer, ui.font, title, centerX, titleY, white, 1.5f);
+                renderTextScaledWithShadow(renderer, ui.font, title, centerX, titleY, white, 1.5f);
             }
 
 
-            // --- ESC / Enter prompts at 25% from bottom ---
+            //ESC/ENTER prompts
             int bottomY = (int) (ui.winH * 0.75);
 
             TTF_SizeText(ui.font, escLine, &textW, &textH);
             int escX = (ui.winW - textW) / 2;
             int escY = bottomY - (textH * 2 + spacing);
-            render_text_scaled_with_shadow(renderer, ui.font, escLine, escX, escY, white, 1.0f);
+            renderTextScaledWithShadow(renderer, ui.font, escLine, escX, escY, white, 1.0f);
 
             TTF_SizeText(ui.font, enterLine, &textW, &textH);
             int enterX = (ui.winW - textW) / 2;
             int enterY = escY + textH + spacing;
-            render_text_scaled_with_shadow(renderer, ui.font, enterLine, enterX, enterY, white, 1.0f);
+            renderTextScaledWithShadow(renderer, ui.font, enterLine, enterX, enterY, white, 1.0f);
         }
     }
 
-    // --- Letters-used button (full-screen) ---
+    //letters used button
     SDL_Texture *buttonTex = ui.lettersPulled ? g_ingameUITextures.lettersTex[1] : g_ingameUITextures.lettersTex[0];
     if (buttonTex) {
         SDL_Rect full = {0, 0, ui.winW, ui.winH};
         SDL_RenderCopy(renderer, buttonTex, NULL, &full);
     }
 
-    // --- Guessed letters (only if letters pulled) ---
+    //guessed letters
     if (ui.lettersPulled && ui.game) {
         SDL_Color white = {255, 255, 255, 255};
 
@@ -459,7 +443,7 @@ void ingame_ui_render(SDL_Renderer *renderer, SDL_Window *window) {
         int textW, textH;
         TTF_SizeText(ui.font, "guessed:", &textW, &textH);
         int centerX = boundX + (boundW - textW) / 2;
-        render_text_scaled_with_shadow(renderer, ui.font, "guessed:", centerX, boundY, white, 0.95f);
+        renderTextScaledWithShadow(renderer, ui.font, "guessed:", centerX, boundY, white, 0.95f);
 
         char line[1024] = {0};
         int lineLen = 0;
@@ -478,7 +462,7 @@ void ingame_ui_render(SDL_Renderer *renderer, SDL_Window *window) {
             if (textW > boundW && lineLen > 0) {
                 TTF_SizeText(ui.font, line, &textW, &textH);
                 centerX = boundX + (boundW - textW) / 2;
-                render_text_scaled_with_shadow(renderer, ui.font, line, centerX, curY, white, 0.95f);
+                renderTextScaledWithShadow(renderer, ui.font, line, centerX, curY, white, 0.95f);
                 curY += textH + 2;
                 snprintf(line, sizeof(line), "%s", buffer);
                 lineLen = strlen(buffer);
@@ -491,17 +475,17 @@ void ingame_ui_render(SDL_Renderer *renderer, SDL_Window *window) {
         if (lineLen > 0) {
             TTF_SizeText(ui.font, line, &textW, &textH);
             centerX = boundX + (boundW - textW) / 2;
-            render_text_scaled_with_shadow(renderer, ui.font, line, centerX, curY, white, 0.95f);
+            renderTextScaledWithShadow(renderer, ui.font, line, centerX, curY, white, 0.95f);
         }
     }
 
-    // --- Pause overlay on top ---
+    //pause overlay
     if (ui.paused && g_ingameUITextures.pauseTex) {
         SDL_Rect full = {0, 0, ui.winW, ui.winH};
         SDL_RenderCopy(renderer, g_ingameUITextures.pauseTex, NULL, &full);
     }
 
-    // --- Power UI ---
+    //power ui
     if (ui.powerUIActive) {
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 150);
@@ -516,7 +500,7 @@ void ingame_ui_render(SDL_Renderer *renderer, SDL_Window *window) {
         }
     }
 
-    // --- Power result text ---
+    //power result text
     if (ui.showPowerResult) {
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
@@ -529,18 +513,18 @@ void ingame_ui_render(SDL_Renderer *renderer, SDL_Window *window) {
         if (TTF_SizeText(ui.font, ui.powerResultText, &textW, &textH) == 0) {
             int x = (ui.winW - textW) / 2;
             int y = (ui.winH - textH) / 2;
-            render_text_scaled_with_shadow(renderer, ui.font, ui.powerResultText, x, y, white, 1.5f);
+            renderTextScaledWithShadow(renderer, ui.font, ui.powerResultText, x, y, white, 1.5f);
         }
     }
 
     SDL_RenderPresent(renderer);
 }
 
-bool ingame_ui_is_waiting_after_gameover(void) {
+bool ingameUiIsWaitingAfterGameover(void) {
     return ui.waitingAfterGameOver;
 }
 
-bool ingame_ui_is_game_over(void) {
+bool ingameUiIsGameOver(void) {
     return ui.gameOver;
 }
 

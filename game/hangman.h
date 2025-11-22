@@ -38,7 +38,7 @@ const char *getGuessedLetters(const GameState *game);
 GameState resetGame(const char *wordFile, const char *word, int lives);
 
 // powers
-void applyPowerUp(GameState *game);
+void powerUpMenu(GameState *game);
 
 void activatePowerUp(GameState *game, int power_id);
 

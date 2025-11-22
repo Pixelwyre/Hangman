@@ -12,6 +12,7 @@
 #define SDL_MAIN_HANDLED
 
 int main(int argc, char *argv[]) {
+    //initialise OpenGL attributes in SDL2
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -32,31 +33,32 @@ int main(int argc, char *argv[]) {
     SDL_Renderer *renderer =
             SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
+    //initialise our renderer
     if (!renderer) {
         printf("Renderer failed: %s\n", SDL_GetError());
         return 1;
     }
 
-    // Initialize loading screen
-    if (!loading_screen_init(window, renderer)) {
+    //initialize our loading screen
+    if (!loadingScreenInit(window, renderer)) {
         printf("Loading screen init failed\n");
         return 1;
     }
 
-    // Start async surface loading (on background thread)
-    if (!texture_manager_start_async_load()) {
+    //start async texture loading (on background thread)
+    if (!textureManagerStartAsyncLoad()) {
         printf("Failed to start texture loading\n");
         return 1;
     }
 
-    // Show loading screen while surfaces load
+    //show loading screen while textures load
     bool loadingComplete = false;
     while (!loadingComplete) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
-                loading_screen_destroy();
-                texture_manager_destroy_all();
+                loadingScreenDestroy();
+                textureManagerDestroyAll();
                 SDL_DestroyRenderer(renderer);
                 SDL_DestroyWindow(window);
                 TTF_Quit();
@@ -65,13 +67,13 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        float progress = texture_manager_get_progress();
-        loading_screen_render(renderer, window, progress);
+        float progress = textureManagerGetProgress();
+        loadingScreenRender(renderer, window, progress);
 
-        // Check if surfaces are loaded
-        if (texture_manager_surfaces_loaded()) {
-            // Now convert surfaces to textures on main thread
-            if (texture_manager_process_loaded_surfaces(renderer)) {
+        //check if surfaces are loaded
+        if (textureManagerSurfacesLoaded()) {
+            //now convert surfaces to textures on main thread
+            if (textureManagerProcessLoadedSurfaces(renderer)) {
                 loadingComplete = true;
             }
         }
@@ -79,12 +81,12 @@ int main(int argc, char *argv[]) {
         SDL_Delay(16); // ~60 FPS
     }
 
-    // Cleanup loading screen
-    loading_screen_destroy();
+    //destroy loading screen
+    loadingScreenDestroy();
 
-    // Initialize UI systems (they now just use already-loaded textures)
-    if (!main_menu_init(window, renderer)) return 1;
-    if (!about_section_init(window, renderer)) return 1;
+    //initialise ui menus using textures that we loaded already
+    if (!mainMenuInit(window, renderer)) return 1;
+    if (!aboutSectionInit(window, renderer)) return 1;
 
     bool shouldQuit = false;
     bool inMenu = true;
@@ -93,21 +95,21 @@ int main(int argc, char *argv[]) {
 
     GameState game;
 
-    // Timing
+    //timing
     Uint64 lastTime = SDL_GetPerformanceCounter();
 
     while (!shouldQuit) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
-            // Window close
+            //window close
             if (event.type == SDL_QUIT) {
                 shouldQuit = true;
             }
 
-            // MAIN MENU INPUT
+            //main menu input handling
             if (inMenu) {
                 MenuAction action =
-                        main_menu_handle_event(window, renderer, &event);
+                        mainMenuHandleEvent(window, renderer, &event);
 
                 if (action == MENU_START) {
                     char *wordFile = getRandomWordFileName();
@@ -121,7 +123,7 @@ int main(int argc, char *argv[]) {
                     game = initHangman(wordFile, word, 6);
                     free(word);
 
-                    if (!ingame_ui_init(window, renderer, &game)) {
+                    if (!ingameUiInit(window, renderer, &game)) {
                         printf("Ingame UI failed\n");
                         shouldQuit = true;
                         break;
@@ -135,7 +137,7 @@ int main(int argc, char *argv[]) {
                 }
             }
 
-            // ABOUT INPUT
+            //about section input handling
             else if (inAbout) {
                 if (event.type == SDL_KEYDOWN &&
                     event.key.keysym.sym == SDLK_ESCAPE) {
@@ -144,39 +146,39 @@ int main(int argc, char *argv[]) {
                 }
             }
 
-            // IN-GAME INPUT
+            //IN-GAME INPUT
             else if (inGame) {
-                ingame_ui_handle_event(&event);
+                ingameUiHandleEvent(&event);
             }
         }
 
-        // ---- TIME STEP ----
+        //time step
         Uint64 current = SDL_GetPerformanceCounter();
         float deltaTime =
                 (float) (current - lastTime) / SDL_GetPerformanceFrequency();
         lastTime = current;
 
-        // ---- RENDER ----
+        //render
         if (inMenu) {
-            main_menu_render(renderer, window);
+            mainMenuRender(renderer, window);
         } else if (inAbout) {
-            about_section_render(renderer, window);
+            aboutSectionRender(renderer, window);
         } else if (inGame) {
-            ingame_ui_update(deltaTime);
-            ingame_ui_render(renderer, window);
+            ingameUiUpdate(deltaTime);
+            ingameUiRender(renderer, window);
 
-            // Return to menu if user pressed ESC after game over
+            //return to menu if user pressed Esc after game over
             if (ingameUiShouldQuit()) {
-                setShouldQuit(false); // reset flag
-                ingame_ui_destroy();
+                setShouldQuit(false); //reset flag
+                ingameUiDestroy();
                 inGame = false;
                 inMenu = true;
             }
         }
     }
 
-    // Cleanup
-    texture_manager_destroy_all();
+    //destroy screens on exit
+    textureManagerDestroyAll();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     TTF_Quit();

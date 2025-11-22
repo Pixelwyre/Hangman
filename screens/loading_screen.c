@@ -5,17 +5,17 @@
 static TTF_Font *g_loadingFont = NULL;
 static SDL_Color g_textColor = {255, 255, 255, 255};
 
-bool loading_screen_init(SDL_Window *window, SDL_Renderer *renderer) {
-    // Load a font for "Loading..." text
+bool loadingScreenInit(SDL_Window *window, SDL_Renderer *renderer) {
+    //load a font for "Loading..." text
     g_loadingFont = TTF_OpenFont("resources/font/PixelifySans-Bold.ttf", 48);
     if (!g_loadingFont) {
         printf("[WARNING] Failed to load font for loading screen: %s\n", TTF_GetError());
-        // Continue anyway - we can still show progress bar
+        //continue anyway, we can still show progress bar
     }
     return true;
 }
 
-void loading_screen_render(SDL_Renderer *renderer, SDL_Window *window, float progress) {
+void loadingScreenRender(SDL_Renderer *renderer, SDL_Window *window, float progress) {
     int windowW, windowH;
     SDL_GetWindowSize(window, &windowW, &windowH);
 
@@ -23,7 +23,7 @@ void loading_screen_render(SDL_Renderer *renderer, SDL_Window *window, float pro
     SDL_SetRenderDrawColor(renderer, 20, 20, 30, 255);
     SDL_RenderClear(renderer);
 
-    // Draw "Loading..." text
+    //draw "Loading..." text
     if (g_loadingFont) {
         SDL_Surface *textSurf = TTF_RenderText_Blended(g_loadingFont, "Loading...", g_textColor);
         if (textSurf) {
@@ -42,7 +42,7 @@ void loading_screen_render(SDL_Renderer *renderer, SDL_Window *window, float pro
         }
     }
 
-    // Draw progress bar background
+    //draw progress bar background
     SDL_Rect barBg = {
         windowW / 2 - 200,
         windowH / 2,
@@ -52,7 +52,7 @@ void loading_screen_render(SDL_Renderer *renderer, SDL_Window *window, float pro
     SDL_SetRenderDrawColor(renderer, 50, 50, 60, 255);
     SDL_RenderFillRect(renderer, &barBg);
 
-    // Draw progress bar fill
+    //draw progress bar fill
     if (progress > 0.0f) {
         SDL_Rect barFill = {
             windowW / 2 - 200,
@@ -64,7 +64,7 @@ void loading_screen_render(SDL_Renderer *renderer, SDL_Window *window, float pro
         SDL_RenderFillRect(renderer, &barFill);
     }
 
-    // Draw percentage text
+    //draw percentage text
     if (g_loadingFont) {
         char percentText[32];
         snprintf(percentText, sizeof(percentText), "%.0f%%", progress * 100.0f);
@@ -89,7 +89,7 @@ void loading_screen_render(SDL_Renderer *renderer, SDL_Window *window, float pro
     SDL_RenderPresent(renderer);
 }
 
-void loading_screen_destroy(void) {
+void loadingScreenDestroy(void) {
     if (g_loadingFont) {
         TTF_CloseFont(g_loadingFont);
         g_loadingFont = NULL;

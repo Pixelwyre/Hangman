@@ -24,8 +24,6 @@ add_executable(Hangman
         screens/about_section.h
         screens/ingame_ui.c
         screens/ingame_ui.h
-        game/game.h
-        game/game.c
         screens/graphics/texture_manager.c
         screens/graphics/texture_manager.h
         screens/loading_screen.c
@@ -46,5 +44,4 @@ target_link_libraries(Hangman
         $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
         $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
         $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
-        glad::glad
 )
