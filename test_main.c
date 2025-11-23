@@ -19,7 +19,7 @@ int main() {
     }
 
     //initialise game state
-    GameState game = initHangman(wordFile, word, 5);
+    GameState game = initHangman(wordFile, word, 6);
     free(word);
     free(wordFile);
 
