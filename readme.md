@@ -1,5 +1,7 @@
 # Hangman
 
+[![Download on itch.io](https://img.shields.io/badge/Download-on%20itch.io-blue?logo=itch.io)](https://samispoggers.itch.io/hangman)
+
 ### Dependencies
 - SDL2
 
