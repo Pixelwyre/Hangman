@@ -268,3 +268,4 @@ END PROCEDURE
   - checks if the string has underscores left, if not the word is completely revealed, returns true
 - resetString(stringPointer)
   - resets string by setting the first letter to a terminator
+
